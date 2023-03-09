@@ -9,5 +9,4 @@ class State(BaseModel):
     """
         it implements state model
     """
-    state_id = ''
     name = ''
