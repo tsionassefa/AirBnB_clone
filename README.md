@@ -26,7 +26,8 @@ v. file.json: JSON file with all information of instances
 
 ### Installation
 Clone the repository; git clone https://github.com/tsionassefa/AirBnB_clone
-Open the /AirBnB_clone directory and execute console.py
+
+Open the AirBnB_clone directory and execute console.py
 
 You need to have python installed on your machine.
 
