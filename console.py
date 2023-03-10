@@ -134,5 +134,44 @@ class HBNBCommand(cmd.Cmd):
             else:
                 print("** class doesn't exist **")
 
+
+    def count(self, line):
+        """
+        this prints all string representation of all instances
+        """
+        objects = models.storage.all()
+        if line:
+            if line.lower() in self.classes:
+                class_objects = {}
+                for i in objects:
+                    if i.startswith(line):
+                        class_objects[i] = objects[i]
+                print(len(class_objects))
+            else:
+                print("** class doesn't exist **")
+
+    def default(self, line):
+        """
+        this is the default method that checks if command entered has the right
+        syntax
+        """
+        args = line.split(".")
+        if len(args) == 2:
+            class_name, function = args
+            if class_name.lower() in self.classes:
+                if function == "all()":
+                    self.do_all(class_name)
+                elif function == "count()":
+                    self.count(class_name)
+                elif function.startswith("show"):
+                    function = function[5:1]
+                    self.do_show(class_name + "" + function)
+                elif function.startswith("destroy"):
+                    function = function[8:-1]
+                    self.do_destroy(class_name + "" + function)
+        else:
+            super().default(line)
+
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
