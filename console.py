@@ -1,10 +1,14 @@
 #!/usr/bin/python3
 import cmd
-import sys
-import os
 import shlex
 import models
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 
@@ -12,7 +16,7 @@ from models.base_model import BaseModel
 class HBNBCommand(cmd.Cmd):
     """HBNB Class """
     prompt = '(hbnb) '
-    classes = {'BaseModel': BaseModel, 'BaseModel': BaseModel}
+    classes = ['BaseModel', 'User', 'Place', 'State', 'City', 'Amenity', 'Review']
     def do_quit(self, argument):
         """ Defines quit option"""
         return True
@@ -20,11 +24,115 @@ class HBNBCommand(cmd.Cmd):
     def do_EOF(self, line):
         """ EOF command to exit the command interpreter """
         return True
+
     def help_help(self):
         """ Prints help command description """
         print("Provides description of a given command")
+
     def do_ENTER(self):
         """ Prints help command description """
         pass
+
+    def do_create(self, line):
+        """
+        this creates a new instance of BaseModel
+        """
+        new_instance = self.parseline(line)[0]
+        if new_instance is None:
+            print("** class name missing **")
+        elif new_instance not in self.classes:
+            print("** class doesn't exist **")
+        else:
+            new_object = eval(new_instance)()
+            new_object.save()
+            print(new_object.id)
+
+    def do_show(self, line):
+        """
+        this prints the string representation of an instance based on
+        the class name and id.
+        """
+        new_instance = self.parseline(line)[0]
+        new_instance_id = self.parseline(line)[1]
+        if new_instance is None:
+            print("** class name missing**")
+        elif new_instance not in self.classes:
+            print("** class doesn't exist **")
+        elif new_instance_id == '':
+            print("** instance id missing **")
+        else:
+            new_instance_data = models.storage.all().get(new_instance + '.' + new_instance_id)
+            if new_instance_data is None:
+                print("** no instance found **")
+            else:
+                print(new_instance_data)
+
+    def do_destroy(self, line):
+        """
+        this deletes an instance based on the class name and id(save the change
+        into the JSON file)
+        """
+        new_instance = self.parseline(line)[0]
+        new_instance_id = self.parseline(line)[1]
+        if new_instance is None:
+            print("** class name missing**")
+        elif new_instance not in self.classes:
+            print("** class doesn't exist **")
+        elif new_instance_id == '':
+            print("** instance id missing **")
+        else:
+            key = new_instance + '.' + new_instance_id
+            new_instance_data = models.storage.all().get(key)
+            if new_instance_data is None:
+                print("** no instance found **")
+            else:
+                del models.storage.all()[key]
+                models.storage.save()
+
+    def do_all(self, line):
+        """
+        this prints all string representation of all instances based or
+        not on the class name
+        """
+        new_instance = self.parseline(line)[0]
+        model_objects = models.storage.all()
+        if new_instance is None:
+            print([str(model_objects[i]) for i in model_objects])
+        elif new_instance in self.classes:
+            keys = model_objects.keys()
+            print([str(model_objects[j]) for j in keys if j.startswith(new_instance)])
+        else:
+            print("** class doesn't exist **")
+
+    def do_update(self, line):
+        """
+        this updates an instance based on the class name and id by adding or updating
+        attribute(save the change into the JSON file)
+        """
+        args = shlex.split(line)
+        all_instances = models.storage.all()
+        if len(args) < 1:
+            print("** class name missing **")
+        elif len(args) < 2:
+            print("** instance id missing **")
+        elif len(args) < 3:
+            print("** attribute name missing **")
+        elif len(args) < 4:
+            print("** value missing **")
+
+        else:
+            if args[0] in classes:
+                key = "{}.{}".format(args[0], args[1])
+
+                if key in all_instances:
+                    for i, j in all_instances.items():
+                        if i == key:
+                            setattr(j, args[2], args[3])
+                            j.save()
+                else:
+                    print("** no instance found **")
+            else:
+                print("** class doesn't exist **")
+
 if __name__ == '__main__':
     HBNBCommand().cmdloop()
