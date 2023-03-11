@@ -3,6 +3,7 @@ import cmd
 import shlex
 import models
 from models.base_model import BaseModel
+from models.base_model import BaseModel
 from models.user import User
 from models.place import Place
 from models.state import State
@@ -10,27 +11,25 @@ from models.city import City
 from models.amenity import Amenity
 from models.review import Review
 
-
+allowed_class = {"BaseModel": BaseModel, "Place": Place, "State": State,
+                 "City": City, "Amenity": Amenity, "Review": Review,
+                 "User": User}
 
 
 class HBNBCommand(cmd.Cmd):
-    """HBNB Class """
+    """HBNB Class
+    """
     prompt = '(hbnb) '
-    classes = ['BaseModel', 'User', 'Place', 'State', 'City', 'Amenity', 'Review']
-    def do_quit(self, argument):
-        """ Defines quit option"""
+    def do_quit(self, line):
+        """quit command: exit the program"""
         return True
 
     def do_EOF(self, line):
-        """ EOF command to exit the command interpreter """
+        """End of File command: exit the program"""
         return True
 
-    def help_help(self):
-        """ Prints help command description """
-        print("Provides description of a given command")
-
-    def do_ENTER(self):
-        """ Prints help command description """
+    def emptyline(self):
+        """overridden to not do nothing"""
         pass
 
     def do_create(self, line):
