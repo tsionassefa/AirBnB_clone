@@ -3,6 +3,7 @@
 
 import cmd
 from models.base_model import BaseModel
+
 from models import storage
 import re
 import json
@@ -10,7 +11,21 @@ import json
 
 class HBNBCommand(cmd.Cmd):
 
+from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+
+allowed_class = {"BaseModel": BaseModel, "Place": Place, "State": State,
+                 "City": City, "Amenity": Amenity, "Review": Review,
+                 "User": User}
+
+
     """Class for the command interpreter."""
+
 
     prompt = "(hbnb) "
 
@@ -87,6 +102,21 @@ class HBNBCommand(cmd.Cmd):
     def emptyline(self):
         """Doesn't do anything on ENTER.
         """
+
+class HBNBCommand(cmd.Cmd):
+    """HBNB Class
+    """
+    prompt = '(hbnb) '
+    def do_quit(self, line):
+        """quit command: exit the program"""
+        return True
+
+    def do_EOF(self, line):
+        """End of File command: exit the program"""
+        return True
+
+    def emptyline(self):
+        """overridden to not do nothing"""
         pass
 
     def do_create(self, line):

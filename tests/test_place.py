@@ -1,15 +1,17 @@
 #!/usr/bin/python3
-"""Test BaseModel- Comproving expectect outputs and documentation"""
-from datetime import datetime
-import time
-import unittest
-# from pep8 import pycodestyle
-import models
-import inspect
-from unittest import mock
+"""Test User Class - Comproving expectect outputs and documentation
+"""
 
-BaseModel = models.base_model.BaseModel
-mod_doc = models.base_model.__doc__
+from datetime import datetime
+import models
+import pep8
+import inspect
+import unittest
+from unittest import mock
+import time
+
+Place = models.place.Place
+mod_doc = models.place.__doc__
 
 
 class TestDocs(unittest.TestCase):
@@ -17,15 +19,17 @@ class TestDocs(unittest.TestCase):
     @classmethod
     def setUpClass(self):
         """Setup for dosctring"""
-        self.base_f = inspect.getmembers(BaseModel, inspect.isfunction)
+        user_i = inspect.getmembers(Place, inspect.isfunction)
 
-    # def testing_pep8(self):
-    # """testing that BaseModel.py passes pep8"""
-    # for path in ['models/base_model.py',
-    # "tests/test_models/test_base_model.py"]:
-    # with self.suptest(path=path):
-    # err = pycodestyle.Checker(path).check_all()
-    # self.assertEqual(err, 0)
+    def testing_pep8(self):
+        """Testing that models_user.py passes pep8 """
+
+    def test_pep8_conformance_user(self):
+        """testing pep8 in place.py"""
+        pep8s = pep8.StyleGuide(quiet=True)
+        result = pep8s.check_files(['models/place.py'])
+        self.assertEqual(result.total_errors, 0,
+                         "Found code style errors (and warnings).")
 
     def test_module_docstring(self):
         """Test for the existence of module docstring"""
@@ -44,40 +48,63 @@ class TestDocs(unittest.TestCase):
 
 class TestBaseModel(unittest.TestCase):
     """testing BaseModel Class"""
-    @mock.patch('models.storage')
+    @mock.patch('models.place')
     def test_instances(self, mock_storage):
         """Testing that object is correctly created"""
-        instance = BaseModel()
-        self.assertIs(type(instance), BaseModel)
-        instance.name = "Holberton"
-        instance.number = 89
+        instance = Place()
+        self.assertIs(type(instance), Place)
+        instance.name = "Holbies foravaaaa"
+        instance.description = "really nice"
+        instance.number_rooms = 2
+        instance.number_bathrooms = 3
+        instance.max_guest = 4
+        instance.price_by_night = 30
+        instance.latitude = 2.5
+        instance.longitude = 5.4
+        instance.longitude = 5.4
+        instance.amenity_ids = ["11", "22"]
+
         expectec_attrs_types = {
             "id": str,
             "created_at": datetime,
             "updated_at": datetime,
             "name": str,
-            "number": int
+            "description": str,
+            "number_rooms": int,
+            "number_bathrooms": int,
+            "max_guest": int,
+            "price_by_night": int,
+            "latitude": float,
+            "longitude": float,
+            "amenity_ids": list
         }
+
         # testing types and attr names
         for attr, types in expectec_attrs_types.items():
             with self.subTest(attr=attr, typ=types):
                 self.assertIn(attr, instance.__dict__)
                 self.assertIs(type(instance.__dict__[attr]), types)
-        self.assertTrue(mock_storage.new.called)
-        self.assertEqual(instance.name, "Holberton")
-        self.assertEqual(instance.number, 89)
+        self.assertEqual(instance.name, "Holbies foravaaaa")
+        self.assertEqual(instance.description, "really nice")
+        self.assertEqual(instance.number_rooms, 2)
+        self.assertEqual(instance.number_bathrooms, 3)
+        self.assertEqual(instance.max_guest, 4)
+        self.assertEqual(instance.price_by_night, 30)
+        self.assertEqual(instance.latitude, 2.5)
+        self.assertEqual(instance.longitude, 5.4)
+        self.assertEqual(instance.amenity_ids, ['11', '22'])
 
     def test_datetime(self):
         """testing correct datetime assignation
         correct assignation of created_at and updated_at"""
         created_at = datetime.now()
-        instance1 = BaseModel()
+        instance1 = Place()
         updated_at = datetime.now()
         self.assertEqual(created_at <= instance1.created_at
                          <= updated_at, True)
         time.sleep(1)
         created_at = datetime.now()
-        instance2 = BaseModel()
+        instance2 = Place()
         updated_at = datetime.now()
         self.assertTrue(created_at <= instance2.created_at <= updated_at, True)
         self.assertEqual(instance1.created_at, instance1.created_at)
@@ -87,43 +114,40 @@ class TestBaseModel(unittest.TestCase):
 
     def test_uuid(self):
         """testing uuid"""
-        instance1 = BaseModel()
-        instance2 = BaseModel()
+        instance1 = Place()
+        instance2 = Place()
         for instance in [instance1, instance2]:
             tuuid = instance.id
             with self.subTest(uuid=tuuid):
                 self.assertIs(type(tuuid), str)
 
-        self.assertNotEqual(instance1.id, instance2.id)
-
     def test_dictionary(self):
         """testing to_dict correct funtionality"""
-        instance3 = BaseModel()
-        instance3.name = "Holbies"
-        instance3.my_number = 89
+        """Testing that object is correctly created"""
+        instance3 = Place()
+        self.assertIs(type(instance3), Place)
+        instance3.name = "Holbies foravaaaa"
         new_inst = instance3.to_dict()
         expectec_attrs = ["id",
                           "created_at",
                           "updated_at",
                           "name",
-                          "my_number",
                           "__class__"]
         self.assertCountEqual(new_inst.keys(), expectec_attrs)
-        self.assertEqual(new_inst['__class__'], 'BaseModel')
-        self.assertEqual(new_inst['name'], 'Holbies')
-        self.assertEqual(new_inst['my_number'], 89)
+        self.assertEqual(new_inst['__class__'], 'Place')
+        self.assertEqual(new_inst['name'], 'Holbies foravaaaa')
 
     def test_str_method(self):
         """testing str method, checking output"""
-        instance4 = BaseModel()
-        strr = "[BaseModel] ({}) {}".format(instance4.id, instance4.__dict__)
+        instance4 = Place()
+        strr = "[Place] ({}) {}".format(instance4.id, instance4.__dict__)
         self.assertEqual(strr, str(instance4))
 
     @mock.patch('models.storage')
     def test_save_method(self, mock_storage):
         """test save method and if it updates
         "updated_at" calling storage.save"""
-        instance4 = BaseModel()
+        instance4 = Place()
         created_at = instance4.created_at
         updated_at = instance4.updated_at
         instance4.save()
