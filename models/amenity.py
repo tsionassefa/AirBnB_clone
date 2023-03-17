@@ -9,4 +9,4 @@ class Amenity(BaseModel):
     """
     It implements the amenity model
     """
-    name = ''
+    name = ""
