@@ -1,1 +1,1 @@
-web_static solutions
+web_static solutions.
