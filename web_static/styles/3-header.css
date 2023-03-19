@@ -12,4 +12,10 @@ div#my_logo{
     top: 12px;
     left: 20px; 
     vertical-align: left; 
+    background-image: url('../images/logo.png') ;
+    background-repeat: no-repeat;
+    width: 150px; 
+    height: 100px;
+    display: inline-block; 
 }
+
