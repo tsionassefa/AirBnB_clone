@@ -4,6 +4,8 @@
     color:"#484848";
     font-size: 14px;
     font-family: Circular,"Helvetica Neue",Helvetica,Arial, Helvetica, sans-serif;
+    box-sizing: border-box; 
+ 
 }  
 
 .container{
@@ -12,9 +14,7 @@
     height: 70px;
     margin-top: 30px;
     margin-bottom: 30px;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    border: 1px#DDDDDD;
-    border-radius: 4px;
+   margin-left: auto;
+   margin-right: auto;
 }
+ 
